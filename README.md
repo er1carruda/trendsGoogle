@@ -9,7 +9,7 @@ O Google Trends não tem API pública. O n8n Cloud opera em IPs de datacenter qu
 ## Base URL
 
 ```
-https://trends.ueric.com.br
+https://sua-vps.com
 ```
 
 ---
@@ -41,7 +41,7 @@ Retorna a série temporal de interesse de busca para uma keyword.
 #### Exemplo de request
 
 ```bash
-curl "https://trends.ueric.com.br/trends?keyword=nuuvem&geo=BR&timeframe=today%2012-m"
+curl "https://trends.sua-vps.com/trends?keyword=nuuvem&geo=BR&timeframe=today%2012-m"
 ```
 
 #### Exemplo de response
@@ -83,7 +83,7 @@ HTTP status `500`.
 Healthcheck do serviço.
 
 ```bash
-curl https://trends.ueric.com.br/health
+curl https://trends.sua-vps.com/health
 ```
 
 ```json
@@ -99,7 +99,7 @@ curl https://trends.ueric.com.br/health
 | Campo          | Valor                                                      |
 |----------------|------------------------------------------------------------|
 | Method         | `GET`                                                      |
-| URL            | `https://trends.ueric.com.br/trends`                       |
+| URL            | `https://trends.sua-vps.com/trends`                       |
 | Query Params   | `keyword=nuuvem`, `geo=BR`, `timeframe=today 12-m`         |
 | Response Format| `JSON`                                                     |
 
@@ -134,7 +134,7 @@ Mapeamento sugerido:
 
 ```
 n8n Cloud
-    └─ HTTP Request → https://trends.ueric.com.br/trends
+    └─ HTTP Request → https://trends.sua-vps.com/trends
                               │
                         Caddy (TLS)
                               │
