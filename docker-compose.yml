@@ -1,0 +1,11 @@
+services:
+  trends-api:
+    build: ./trends-api
+    container_name: trends-api
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
