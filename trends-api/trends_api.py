@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 from pytrends.request import TrendReq
+import requests as http_requests
+import xml.etree.ElementTree as ET
 import logging
 import os
 import time
@@ -98,6 +100,45 @@ def get_trends():
             return jsonify(cached)
         if _is_rate_limited(e):
             return jsonify({'error': 'rate limited by Google', 'detail': str(e)}), 429
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/trending')
+def get_trending():
+    geo = request.args.get('geo', 'BR')
+    top = int(request.args.get('top', 10))
+
+    try:
+        r = http_requests.get(
+            'https://trends.google.com/trending/rss',
+            params={'geo': geo},
+            timeout=10
+        )
+        r.raise_for_status()
+
+        ns = {'ht': 'https://trends.google.com/trending/rss'}
+        root = ET.fromstring(r.text)
+        items = root.findall('./channel/item')[:top]
+
+        def parse_traffic(item):
+            raw = item.findtext('ht:approx_traffic', namespaces=ns) or '0+'
+            return int(raw.replace('+', '').replace(',', ''))
+
+        items.sort(key=parse_traffic, reverse=True)
+
+        result = [
+            {
+                'rank': i + 1,
+                'title': item.findtext('title'),
+                'traffic': item.findtext('ht:approx_traffic', namespaces=ns),
+                'date': item.findtext('pubDate'),
+            }
+            for i, item in enumerate(items)
+        ]
+        return jsonify(result)
+
+    except Exception as e:
+        logging.error(f"Error fetching trending searches: {e}")
         return jsonify({'error': str(e)}), 500
 
 
