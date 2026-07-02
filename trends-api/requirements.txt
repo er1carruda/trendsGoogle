@@ -1,3 +1,8 @@
 flask==3.1.0
 pytrends==4.9.2
 pandas==2.2.3
+# pytrends 4.9.2 passes method_whitelist= to urllib3's Retry, which urllib3 2.x
+# removed (renamed to allowed_methods). The retries/backoff added by the
+# rate-limit hardening build that Retry, so /trends 500s on urllib3 2.x. Pin to
+# the last 1.26.x, which still supports method_whitelist.
+urllib3==1.26.20
